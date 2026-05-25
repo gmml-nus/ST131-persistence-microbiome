@@ -2,7 +2,6 @@ library(pROC)
 library(ggplot2)
 library(dplyr)
 
-setwd("/Users/zyggyzdys/Desktop/st131")
 set.seed(123)
 
 color_clinical <- "#E64B35FF"

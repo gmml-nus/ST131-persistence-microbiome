@@ -9,9 +9,7 @@ library(tidyr)
 library(patchwork)
 library(rstatix)
 library(ggpubr)
-setwd("/Users/zyggyzdys/Desktop/st131")
 set.seed(123)
-
 
 meta <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
   dplyr::select(SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier,	st131_detect, age,

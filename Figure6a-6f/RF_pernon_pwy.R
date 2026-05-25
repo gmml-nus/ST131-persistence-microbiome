@@ -9,7 +9,6 @@ library(tidyr)
 library(patchwork)
 library(rstatix)
 library(ggpubr)
-setwd("/Users/zyggyzdys/Desktop/st131")
 set.seed(123)
 
 

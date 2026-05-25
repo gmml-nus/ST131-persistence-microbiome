@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # ST131 Microbiome and Carriage Analysis Pipeline
 
 This repository contains the metadata and scripts for generating the figures in the article **"Microbiome features associated with persistent intestinal carriages of Escherichia coli ST131 in a Southeast Asian cohort study"**. It provides the data analysis pipeline and visualization scripts used in the article.
@@ -59,3 +60,7 @@ To run these scripts, you will need **R** (>= 4.0.0) and the following core pack
 ## License
 
 This project is licensed under the MIT License.
+=======
+# ST131-persistence-microbiome
+Code and analysis for investigating the microbiome signatures of persistent E. coli ST131 carriage in a Southeast Asian cohort.
+>>>>>>> e23bd13267c6c1520c600660dda9eae1697946e2
