@@ -56,11 +56,3 @@ To run these scripts, you will need **R** (>= 4.0.0) and the following core pack
    ```
    
    This will execute the underlying clinical, pathway, and taxa random forest models, compute the 95% Confidence Intervals for AUCs, perform DeLong's tests, and output a combined `combined_ROC_perint.svg` figure.
-
-## License
-
-This project is licensed under the MIT License.
-=======
-# ST131-persistence-microbiome
-Code and analysis for investigating the microbiome signatures of persistent E. coli ST131 carriage in a Southeast Asian cohort.
->>>>>>> e23bd13267c6c1520c600660dda9eae1697946e2
