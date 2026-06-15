@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # ST131 Microbiome and Carriage Analysis Pipeline
 
 This repository contains the metadata and scripts for generating the figures in the article **"Microbiome features associated with persistent intestinal carriages of Escherichia coli ST131 in a Southeast Asian cohort study"**. It provides the data analysis pipeline and visualization scripts used in the article.
@@ -7,7 +6,7 @@ This repository contains the metadata and scripts for generating the figures in 
 
 The repository is organized into directories corresponding to the figures and analyses generated for the manuscript:
 
-- **`Figure1a_1b_1c_1d/`**: Scripts for calculating and visualizing alpha and beta diversity (e.g., PCoA based on Aitchison distance) across carriage groups.
+- **`Figure1a_1b_1c_1d/`**: Scripts for calculating and visualizing alpha and beta diversity across carriage groups.
 - **`Figure2a_2b_3c/`**: Pathway and taxonomic differential abundance plotting.
 - **`Figure3a/` & `Figure3c_3d/`**: Taxa and pathway bubble plots depicting relative abundances and prevalence across carriage states.
 - **`Figure4b/`**: Correlation analysis between specific EC numbers and *E. coli* abundance.
@@ -17,7 +16,7 @@ The repository is organized into directories corresponding to the figures and an
 
 ## Metadata Instructions
 
-The master metadata file `meta_2025_v7.xlsx` is central to the entire analysis pipeline and contains several key worksheets that need to be parsed correctly by the R scripts:
+The metadata file `metadata.xlsx` contains several key worksheets that need to be parsed correctly by the R scripts:
 
 - **`R` (Clinical Data):** Contains patient metadata and clinical covariates. Key columns include:
   - `SN`, `rawseqID`: Sample identifiers.
@@ -46,7 +45,7 @@ To run these scripts, you will need **R** (>= 4.0.0) and the following core pack
    ```
 
 2. **Data Availability:**
-   Ensure that the master metadata file (`meta_2025_v7.xlsx`) is present in the root directory. This file is required by all downstream analysis scripts.
+   Ensure that the master metadata file (`metadata.xlsx`) is present in the root directory. This file is required by all downstream analysis scripts.
 
 3. **Running Scripts:**
    The scripts are designed to be run from the root directory of the repository. For example, to generate the Random Forest ROC curves for Persistent vs Intermittent carriage:
@@ -55,4 +54,4 @@ To run these scripts, you will need **R** (>= 4.0.0) and the following core pack
    source("Figure6a-6f/RF_perint_collect.R")
    ```
    
-   This will execute the underlying clinical, pathway, and taxa random forest models, compute the 95% Confidence Intervals for AUCs, perform DeLong's tests, and output a combined `combined_ROC_perint.svg` figure.
+   This will execute the underlying clinical, pathway, and taxa random forest models and output figures.
