@@ -40,8 +40,8 @@ To run these scripts, you will need **R** (>= 4.0.0) and the following core pack
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/your-username/st131.git
-   cd st131
+   git clone https://github.com/gmml-nus/ST131-persistence-microbiome.git
+   cd ST131-persistence-microbiome
    ```
 
 2. **Data Availability:**
