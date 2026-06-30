@@ -2,7 +2,7 @@ library(tidyverse)
 library(readxl)
 library(patchwork)
 
-pwy_names <- read_excel("meta_2025_v7.xlsx", sheet = "pwynames") %>%
+pwy_names <- read_excel("metadata.xlsx", sheet = "pwynames") %>%
   dplyr::select(PWY, Names)
 
 create_barplot <- function(df, x_var, y_var, fill_var, title = NULL, x_lab = "", y_lab = "Log Fold Change (log10 scale)", width = NULL) {

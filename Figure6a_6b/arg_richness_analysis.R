@@ -4,7 +4,7 @@ library(ggplot2)
 library(dplyr)
 library(rstatix)
 
-meta_per <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta_per <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(
     SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier, st131_detect, age,
     sex, abx_6months, index_pt, st131_qpcr_trpa_pabb, st131_mnth, st131_mnth_isolate_count, st131_wgs,
@@ -26,7 +26,7 @@ meta_per <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
   )
 
 # Load CARD (ARG) data
-card_data <- read_excel("meta_2025_v7.xlsx", sheet = "card") %>%
+card_data <- read_excel("metadata.xlsx", sheet = "card") %>%
   pivot_longer(cols = -CARD, names_to = "SN", values_to = "abundance") %>%
   filter(SN %in% c(meta_per$rawseqID, meta_per$SN)) %>%
   mutate(presence = ifelse(abundance > 0, 1, 0))
@@ -246,8 +246,8 @@ ggsave("arg_richness_carriage_status.png", carriage_plot, width = 10, height = 8
 ggsave("arg_richness_st131_detection.png", st131_plot, width = 10, height = 8, dpi = 300)
 
 # Save both datasets
-write.csv(arg_meta_st131, "arg_richness_data_st131.csv", row.names = FALSE) # ST131 analysis (baseline + repeat)
-write.csv(arg_meta_carrier, "arg_richness_data_carrier.csv", row.names = FALSE) # Carriage analysis (baseline only)
-write.csv(kruskal_st131, "arg_richness_st131_statistics.csv", row.names = FALSE)
-write.csv(kruskal_carriage, "arg_richness_carriage_statistics.csv", row.names = FALSE)
-write.csv(dunn_carriage, "arg_richness_dunn_carriage_statistics.csv", row.names = FALSE)
+#write.csv(arg_meta_st131, "arg_richness_data_st131.csv", row.names = FALSE) # ST131 analysis (baseline + repeat)
+#write.csv(arg_meta_carrier, "arg_richness_data_carrier.csv", row.names = FALSE) # Carriage analysis (baseline only)
+#write.csv(kruskal_st131, "arg_richness_st131_statistics.csv", row.names = FALSE)
+#write.csv(kruskal_carriage, "arg_richness_carriage_statistics.csv", row.names = FALSE)
+#write.csv(dunn_carriage, "arg_richness_dunn_carriage_statistics.csv", row.names = FALSE)

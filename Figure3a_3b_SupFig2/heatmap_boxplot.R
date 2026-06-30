@@ -111,7 +111,7 @@ build_household_exposure <- function(meta_df) {
     filter(!is.na(hd_exposure))
 }
 
-pwy_names <- read_excel("meta_2025_v7.xlsx", sheet = "pwynames") %>%
+pwy_names <- read_excel("metadata.xlsx", sheet = "pwynames") %>%
   select(PWY, Names)
 
 pwy_hd_res <- read.csv("sigpwy_hd_exposure.csv")
@@ -123,11 +123,11 @@ sig_pwy_hd <- unique(c(
 ))
 
 if (length(sig_pwy_hd) > 0) {
-  meta_hd_box <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+  meta_hd_box <- read_excel("metadata.xlsx", sheet = "R") %>%
     build_household_exposure() %>%
     add_hd_exposure_counts()
 
-  pwy_raw_box <- read_excel("meta_2025_v7.xlsx", sheet = "pwy")
+  pwy_raw_box <- read_excel("metadata.xlsx", sheet = "pwy")
   pwy_abundance_box <- pwy_raw_box %>%
     column_to_rownames("PWY") %>%
     t() %>%
@@ -203,12 +203,12 @@ if (length(sig_taxa_hd) > 0) {
     arrange(m) %>%
     pull(display_name)
 
-  meta_taxa_box <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+  meta_taxa_box <- read_excel("metadata.xlsx", sheet = "R") %>%
     build_household_exposure() %>%
     select(SN, rawseqID, carrier, st131_detect, hd_exposure) %>%
     add_hd_exposure_counts()
 
-  taxa_data_hd <- read_excel("meta_2025_v7.xlsx", sheet = "taxa") %>%
+  taxa_data_hd <- read_excel("metadata.xlsx", sheet = "taxa") %>%
     select(-Kingdom, -Phyla, -Class, -Order, -Family, -Genus) %>%
     filter(Species %in% sig_taxa_hd) %>%
     pivot_longer(cols = -Species, names_to = "rawseqID", values_to = "relab") %>%
@@ -249,7 +249,7 @@ if (length(sig_taxa_hd) > 0) {
     )
   }
 
-  meta_taxa_hm <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+  meta_taxa_hm <- read_excel("metadata.xlsx", sheet = "R") %>%
     build_household_exposure() %>%
     mutate(
       hd_exposure = factor(
@@ -259,7 +259,7 @@ if (length(sig_taxa_hd) > 0) {
       )
     )
 
-  taxa_long_hm <- read_excel("meta_2025_v7.xlsx", sheet = "taxa") %>%
+  taxa_long_hm <- read_excel("metadata.xlsx", sheet = "taxa") %>%
     select(-Kingdom, -Phyla, -Class, -Order, -Family, -Genus) %>%
     filter(Species %in% sig_taxa_hd) %>%
     pivot_longer(cols = -Species, names_to = "rawseqID", values_to = "relab_raw") %>%

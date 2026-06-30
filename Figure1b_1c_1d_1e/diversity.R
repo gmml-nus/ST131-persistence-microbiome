@@ -7,7 +7,7 @@ library(rstatix)
 cbp1 <- c("#b03535", "#accc87", "#3549b0", "#008000", "#2a9df4", "#9f42f0", "#ffb50e", "#F39B7FB2", "#9191BA")
 
 # Load metadata
-meta_full <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta_full <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(rawseqID, timepoint, carrier, st131_detect, age, sex, abx_6months, household, raw_counts) %>%
   mutate(
     st131_detect = factor(st131_detect, levels = c("yes", "no", "NA")),
@@ -22,7 +22,7 @@ meta_full <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
   filter(!is.na(timepoint))
 
 # Load taxa
-taxa_raw <- read_excel("meta_2025_v7.xlsx", sheet = "taxa") %>%
+taxa_raw <- read_excel("metadata.xlsx", sheet = "taxa") %>%
   select(-Kingdom, -Phyla, -Class, -Order, -Family, -Genus) %>%
   gather(rawseqID, relab, -Species) %>%
   mutate(relab = relab / 100) %>%

@@ -6,7 +6,7 @@ library(scales)
 library(readr)
 
 # Load metadata
-meta <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(
     SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier, st131_detect, age,
     sex, abx_6months, index_pt, st131_qpcr_trpa_pabb, st131_mnth, st131_mnth_isolate_count, st131_wgs,
@@ -29,11 +29,11 @@ meta_filtered <- meta %>%
   filter(st131_detect %in% c("yes", "no"))
 
 # Load taxa data
-taxa_raw <- read_excel("meta_2025_v7.xlsx", sheet = "taxa") %>%
+taxa_raw <- read_excel("metadata.xlsx", sheet = "taxa") %>%
   select(-Kingdom, -Phyla, -Class, -Order, -Family, -Genus)
 
 # Get the species from taxa.csv (only the species listed there)
-taxa_list <- read_csv("./prevalence/taxa.csv", show_col_types = FALSE) %>%
+taxa_list <- read_csv("taxa.csv", show_col_types = FALSE) %>%
   distinct(Species) %>%
   pull(Species)
 

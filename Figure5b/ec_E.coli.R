@@ -6,7 +6,7 @@ library(vegan)
 library(patchwork)
 library(rstatix)
 
-meta_per <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta_per <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(
     SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier, st131_detect, age,
     sex, abx_6months, index_pt, st131_qpcr_trpa_pabb, st131_mnth, st131_mnth_isolate_count, st131_wgs,
@@ -27,7 +27,7 @@ meta_per <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
   ) 
 
 # load EC data
-ec_raw <- read_excel("meta_2025_v7.xlsx", sheet = "ec") %>%
+ec_raw <- read_excel("metadata.xlsx", sheet = "ec") %>%
   gather(SN, relab, -EC) %>%
   spread(EC, relab) %>%
   column_to_rownames(var = "SN")

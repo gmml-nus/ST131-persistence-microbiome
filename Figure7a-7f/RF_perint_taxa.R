@@ -11,7 +11,7 @@ library(rstatix)
 library(ggpubr)
 set.seed(123)
 
-meta <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(
     SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier, st131_detect, age,
     sex, abx_6months, index_pt, st131_qpcr_trpa_pabb, st131_mnth, st131_mnth_isolate_count, st131_wgs,
@@ -40,7 +40,7 @@ carriage_data <- meta %>%
   na.omit() %>%
   left_join(meta %>% dplyr::select(SN, rawseqID), by = "SN")
 
-taxa_raw <- read_excel("meta_2025_v7.xlsx", sheet = "taxa")
+taxa_raw <- read_excel("metadata.xlsx", sheet = "taxa")
 
 taxa_abundance <- taxa_raw %>%
   dplyr::select(-Kingdom, -Phyla, -Class, -Order, -Family, -Genus) %>%

@@ -5,7 +5,7 @@ library(patchwork)
 library(rstatix)
 library(ggpubr)
 
-meta <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier, st131_detect, age, 
                 sex, abx_6months, index_pt, st131_qpcr_trpa_pabb, st131_mnth, st131_mnth_isolate_count, st131_wgs,	
                 st131pos_density_wgs, raw_counts, old_SN) %>%
@@ -16,7 +16,7 @@ meta_all <- meta
 meta_abx_no <- meta %>% filter(abx_6months == "no")
 
 # load PWY data
-pwy_raw <- read_excel("meta_2025_v7.xlsx", sheet = "pwy")
+pwy_raw <- read_excel("metadata.xlsx", sheet = "pwy")
 pwy_abundance <- pwy_raw %>%
   column_to_rownames("PWY") %>%
   t() %>%

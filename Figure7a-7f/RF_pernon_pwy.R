@@ -12,7 +12,7 @@ library(ggpubr)
 set.seed(123)
 
 
-meta <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier,	st131_detect, age,
                 sex, abx_6months,	index_pt,	st131_qpcr_trpa_pabb, st131_mnth,	st131_mnth_isolate_count, st131_wgs,
                 st131pos_density_wgs,	raw_counts,	old_SN) %>%
@@ -36,7 +36,7 @@ carriage_data <- meta %>%
   select(subject_code, SN, carriage_status, age_scaled, sex, abx_6months, timepoint) %>%
   na.omit()
 
-pwy_raw <- read_excel("meta_2025_v7.xlsx", sheet = "pwy")
+pwy_raw <- read_excel("metadata.xlsx", sheet = "pwy")
 
 pathway_abundance <- pwy_raw %>%
   column_to_rownames("PWY") %>%
@@ -335,7 +335,7 @@ print(roc_plot)
 ggsave("pathway_ROC.svg", roc_plot, width = 8, height = 8, dpi = 300)
 
 
-pwy_names <- read_excel("meta_2025_v7.xlsx", sheet = "pwynames") %>%
+pwy_names <- read_excel("metadata.xlsx", sheet = "pwynames") %>%
   dplyr::select(PWY, Names)
 
 print(str(rfe_result$results))

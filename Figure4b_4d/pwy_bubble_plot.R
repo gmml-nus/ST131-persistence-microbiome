@@ -6,7 +6,7 @@ library(scales)
 library(readr)
 
 # Load metadata
-meta <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
+meta <- read_excel("metadata.xlsx", sheet = "R") %>%
   dplyr::select(
     SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier, st131_detect, age,
     sex, abx_6months, index_pt, st131_qpcr_trpa_pabb, st131_mnth, st131_mnth_isolate_count, st131_wgs,
@@ -27,7 +27,7 @@ meta_filtered <- meta %>%
   filter(carrier %in% c("non_carrier", "per", "int"), !is.na(carrier)) %>%
   filter(st131_detect %in% c("yes", "no"))
 
-pwy_raw <- read_excel("meta_2025_v7.xlsx", sheet = "pwy")
+pwy_raw <- read_excel("metadata.xlsx", sheet = "pwy")
 pwy_abundance <- pwy_raw %>%
   column_to_rownames("PWY") %>%
   t() %>%
@@ -37,7 +37,7 @@ pwy_abundance <- pwy_raw %>%
 pwy_cols <- setdiff(colnames(pwy_abundance), c("SN", "UNMAPPED", "UNINTEGRATED"))
 pwy_abundance <- pwy_abundance %>% select(SN, all_of(pwy_cols))
 
-pwy_map <- read_csv("./prevalence/pwy.csv", show_col_types = FALSE) %>%
+pwy_map <- read_csv("pwy.csv", show_col_types = FALSE) %>%
   distinct(PWY, pwy)
 pwy_list <- pwy_map %>% pull(PWY)
 
