@@ -114,8 +114,8 @@ build_household_exposure <- function(meta_df) {
 pwy_names <- read_excel("metadata.xlsx", sheet = "pwynames") %>%
   select(PWY, Names)
 
-pwy_hd_res <- read.csv("sigpwy_hd_exposure.csv")
-pwy_hd_hl_res <- read.csv("sigpwy_hd_exposure_high_vs_low.csv")
+pwy_hd_res <- read.csv("LR_results/sigpwy_hd_exposure.csv")
+pwy_hd_hl_res <- read.csv("LR_results/sigpwy_hd_exposure_high_vs_low.csv")
 sig_pwy_hd <- unique(c(
   pwy_hd_res %>% filter(term == "hd_exposurehigh_exposure", abs(estimate) > 0.3, padj < 0.05) %>% pull(PWY),
   pwy_hd_res %>% filter(term == "hd_exposurelow_exposure", abs(estimate) > 0.3, padj < 0.05) %>% pull(PWY),
@@ -180,8 +180,8 @@ if (length(sig_pwy_hd) > 0) {
   }
 }
 
-taxa_hd_res <- read.csv("sigtaxa_hd_exposure.csv")
-taxa_hd_hl_res <- read.csv("sigtaxa_hd_exposure_high_vs_low.csv")
+taxa_hd_res <- read.csv("LR_results/sigtaxa_hd_exposure.csv")
+taxa_hd_hl_res <- read.csv("LR_results/sigtaxa_hd_exposure_high_vs_low.csv")
 sig_taxa_hd <- unique(c(
   taxa_hd_res %>% filter(term == "hd_exposurehigh_exposure", abs(estimate) > 0.3, padj < 0.05) %>% pull(Species),
   taxa_hd_res %>% filter(term == "hd_exposurelow_exposure", abs(estimate) > 0.3, padj < 0.05) %>% pull(Species),
