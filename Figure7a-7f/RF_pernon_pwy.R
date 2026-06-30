@@ -11,30 +11,27 @@ library(rstatix)
 library(ggpubr)
 set.seed(123)
 
+
 meta <- read_excel("meta_2025_v7.xlsx", sheet = "R") %>%
-  dplyr::select(
-    SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier, st131_detect, age,
-    sex, abx_6months, index_pt, st131_qpcr_trpa_pabb, st131_mnth, st131_mnth_isolate_count, st131_wgs,
-    st131pos_density_wgs, raw_counts, old_SN
-  ) %>%
-  mutate(
-    st131_detect = factor(st131_detect, levels = c("yes", "no")),
-    index_pt = factor(index_pt, levels = c("yes", "no")),
-    carrier = factor(carrier, levels = c("non_carrier", "per", "int")),
-    abx_6months = factor(abx_6months, levels = c("yes", "no")),
-    timepoint = factor(timepoint, levels = c("Baseline", "Repeat")),
-    sex = factor(sex, levels = c("M", "F")),
-    subject_code = factor(subject_code),
-    household = factor(household)
-  ) %>%
+  dplyr::select(SN, rawseqID, sample_code, subject_code, household, reads, timepoint, carrier,	st131_detect, age,
+                sex, abx_6months,	index_pt,	st131_qpcr_trpa_pabb, st131_mnth,	st131_mnth_isolate_count, st131_wgs,
+                st131pos_density_wgs,	raw_counts,	old_SN) %>%
+  mutate(st131_detect=factor(st131_detect, levels=c("yes", "no")),
+         index_pt=factor(index_pt, levels=c("yes", "no")),
+         carrier = factor(carrier, levels =c("non_carrier", "per", "int")),
+         abx_6months=factor(abx_6months, levels=c("yes","no")),
+         timepoint=factor(timepoint, levels=c("Baseline", "Repeat")),
+         sex=factor(sex, levels=c("M", "F")),
+         subject_code=factor(subject_code),
+         household=factor(household)) %>%
   filter(st131_detect %in% c("yes", "no"))
 
 carriage_data <- meta %>%
-  filter(carrier %in% c("int", "per")) %>%
+  filter(carrier %in% c("per", "non_carrier")) %>%
   select(subject_code, SN, carrier, age, sex, abx_6months, timepoint) %>%
   mutate(
-    carriage_status = factor(carrier, levels = c("int", "per"), labels = c("Intermittent", "Persistent")),
-    age_scaled = scale(age)[, 1]
+    carriage_status = factor(carrier, levels = c("non_carrier", "per"), labels = c("Non_Carrier", "Persistent")),
+    age_scaled = scale(age)[,1]
   ) %>%
   select(subject_code, SN, carriage_status, age_scaled, sex, abx_6months, timepoint) %>%
   na.omit()
@@ -78,7 +75,7 @@ pathway_data[pathway_cols_in_data] <- lapply(pathway_data[pathway_cols_in_data],
 })
 
 pathway_data <- pathway_data %>%
-  select_if(~ !all(is.na(.)))
+  select_if(~!all(is.na(.)))
 
 pathway_cols_in_data <- setdiff(colnames(pathway_data), c("subject_code", "carriage_status", "age_scaled", "sex", "abx_6months"))
 
@@ -95,12 +92,12 @@ pathway_data_only <- data.frame(
 )
 
 cat("Checking for NaN values in pathway data...\n")
-nan_count <- sum(is.nan(as.matrix(pathway_data_only[, -c(1, 2)])))
+nan_count <- sum(is.nan(as.matrix(pathway_data_only[,-c(1,2)])))
 cat("NaN values found:", nan_count, "\n")
 
-if (nan_count > 0) {
+if(nan_count > 0) {
   cat("Replacing NaN values with 0...\n")
-  pathway_data_only[, -c(1, 2)][is.nan(as.matrix(pathway_data_only[, -c(1, 2)]))] <- 0
+  pathway_data_only[,-c(1,2)][is.nan(as.matrix(pathway_data_only[,-c(1,2)]))] <- 0
 }
 
 complete_clinical_rows <- complete.cases(clinical_vars)
@@ -115,11 +112,8 @@ clinical_vars_clean <- clinical_vars %>% na.omit()
 
 set.seed(123)
 subjects <- factor(clinical_vars_clean$subject_code)
-k <- 5
-repeats <- 5
-cv_index <- list()
-cv_indexOut <- list()
-counter <- 1
+k <- 5; repeats <- 5
+cv_index <- list(); cv_indexOut <- list(); counter <- 1
 for (r in 1:repeats) {
   set.seed(1000 + r)
   folds <- caret::groupKFold(subjects, k = k)
@@ -156,8 +150,8 @@ current_pathways <- setdiff(colnames(pathway_data_matched), c("subject_code", "c
 
 elimination_steps <- c(100, 50)
 
-for (step_size in elimination_steps) {
-  if (length(current_pathways) > step_size) {
+for(step_size in elimination_steps) {
+  if(length(current_pathways) > step_size) {
     cat("\n=== Reducing from", length(current_pathways), "to", step_size, "pathways ===\n")
 
     current_data <- pathway_data_matched[, c("carriage_status", current_pathways)]
@@ -181,7 +175,7 @@ for (step_size in elimination_steps) {
 
 rfe_pathways <- current_pathways
 
-while (length(rfe_pathways) > target_features) {
+while(length(rfe_pathways) > target_features) {
   cat("Current features:", length(rfe_pathways), "→ removing worst...\n")
 
   rfe_data <- pathway_data_matched[, c("carriage_status", rfe_pathways)]
@@ -220,7 +214,7 @@ for (i in seq_along(cv_index)) {
   }
 }
 
-if (length(cv_aucs) > 0) {
+if(length(cv_aucs) > 0) {
   mean_auc <- mean(cv_aucs)
   sd_auc <- sd(cv_aucs)
   cat("Final", target_features, "-feature model: CV AUC =", round(mean_auc, 3), "±", round(sd_auc, 3), "\n")
@@ -263,13 +257,11 @@ clinical_preds <- clinical_model$pred[clinical_model$pred$mtry == clinical_model
 pathway_preds <- pathway_model$pred[pathway_model$pred$mtry == pathway_model$bestTune$mtry, ]
 
 roc_clinical <- roc(clinical_preds$obs, clinical_preds$Persistent,
-  levels = c("Intermittent", "Persistent"),
-  direction = "<", quiet = TRUE
-)
+                  levels = c("Non_Carrier", "Persistent"),
+                  direction = "<", quiet = TRUE)
 roc_pathway <- roc(pathway_preds$obs, pathway_preds$Persistent,
-  levels = c("Intermittent", "Persistent"),
-  direction = "<", quiet = TRUE
-)
+                 levels = c("Non_Carrier", "Persistent"),
+                 direction = "<", quiet = TRUE)
 
 delong_test <- roc.test(roc_pathway, roc_clinical, method = "delong")
 p_value_pwy <- delong_test$p.value
@@ -305,31 +297,23 @@ roc_data <- rbind(
 
 color_mapping <- c("Clinical" = "#E64B35FF", "Pathway" = "#4DBBD5FF")
 
-clinical_auc_text <- sprintf(
-  "AUC = %.3f (95%% CI: %.3f-%.3f)",
-  clinical_auc, round(clinical_ci[1], 3), round(clinical_ci[3], 3)
-)
-pathway_auc_text <- sprintf(
-  "AUC = %.3f (95%% CI: %.3f-%.3f)",
-  pathway_auc, round(pathway_ci[1], 3), round(pathway_ci[3], 3)
-)
+clinical_auc_text <- sprintf("AUC = %.3f (95%% CI: %.3f-%.3f)",
+                           clinical_auc, round(clinical_ci[1], 3), round(clinical_ci[3], 3))
+pathway_auc_text <- sprintf("AUC = %.3f (95%% CI: %.3f-%.3f)",
+                          pathway_auc, round(pathway_ci[1], 3), round(pathway_ci[3], 3))
 
 
 roc_plot <- ggplot(roc_data, aes(x = 1 - Specificity, y = Sensitivity, color = Model)) +
   geom_path(linewidth = 1.2) +
   geom_abline(intercept = 0, slope = 1, linetype = "dashed", color = "gray50", alpha = 0.7) +
   scale_color_manual(values = color_mapping) +
-  annotate("text",
-    x = 0.5, y = 0.1, label = clinical_auc_text,
-    color = "#E64B35FF", size = 3, hjust = 0
-  ) +
-  annotate("text",
-    x = 0.5, y = 0.05, label = pathway_auc_text,
-    color = "#4DBBD5FF", size = 3, hjust = 0
-  ) +
+  annotate("text", x = 0.5, y = 0.1, label = clinical_auc_text,
+           color = "#E64B35FF", size = 3, hjust = 0) +
+  annotate("text", x = 0.5, y = 0.05, label = pathway_auc_text,
+           color = "#4DBBD5FF", size = 3, hjust = 0) +
   labs(
-    title = "Random Forest ROC Curves: Persistent vs Intermittent",
-    subtitle = paste0("All timepoints | Subject-level CV | DeLong test p = ", format.pval(p_value_pwy, digits = 3)),
+    title = "Random Forest ROC Curves",
+    subtitle = paste0("delong test p value: ", p_value_pwy),
     x = "False Positive Rate",
     y = "True Positive Rate"
   ) +
@@ -348,8 +332,7 @@ roc_plot <- ggplot(roc_data, aes(x = 1 - Specificity, y = Sensitivity, color = M
 
 print(roc_plot)
 
-ggsave("pathway_perint_ROC.png", roc_plot, width = 8, height = 8, dpi = 300)
-ggsave("pathway_perint_ROC.svg", roc_plot, width = 8, height = 8, dpi = 300)
+ggsave("pathway_ROC.svg", roc_plot, width = 8, height = 8, dpi = 300)
 
 
 pwy_names <- read_excel("meta_2025_v7.xlsx", sheet = "pwynames") %>%
@@ -357,9 +340,9 @@ pwy_names <- read_excel("meta_2025_v7.xlsx", sheet = "pwynames") %>%
 
 print(str(rfe_result$results))
 
-if (!is.null(rfe_result$results) && nrow(rfe_result$results) > 0) {
+if(!is.null(rfe_result$results) && nrow(rfe_result$results) > 0) {
   rfe_results_df <- rfe_result$results
-  if (!"Variables" %in% colnames(rfe_results_df)) {
+  if(!"Variables" %in% colnames(rfe_results_df)) {
     names(rfe_results_df)[1] <- "Variables"
   }
 } else {
@@ -414,9 +397,8 @@ importance_df <- data.frame(
   mutate(
     display_name = ifelse(is.na(Names) | Names == "", PWY, Names),
     display_name = ifelse(nchar(display_name) > 40,
-      paste0(substr(display_name, 1, 37), "..."),
-      display_name
-    ),
+                         paste0(substr(display_name, 1, 37), "..."),
+                         display_name),
     selected_by_rfe = PWY %in% selected_features,
     Importance = Importance_100_Full
   )
@@ -452,7 +434,7 @@ plot_data <- importance_display %>%
   slice_head(n = n_selected)
 
 importance_plot <- ggplot(plot_data, aes(y = reorder(full_name, Raw_Importance), x = Raw_Importance)) +
-  geom_col(fill = "#AC9ECEFF", alpha = 0.8, width = 0.7) +
+  geom_col(fill ="#AC9ECEFF", alpha = 0.8, width = 0.7) +
   labs(
     title = "Feature Importance",
     subtitle = paste0("RFE-Selected Pathway Features (n=", n_selected, ")"),
@@ -481,8 +463,7 @@ abundance_data <- carriage_data %>%
   filter(!is.na(full_name))
 
 abundance_data$full_name <- factor(abundance_data$full_name,
-  levels = levels(reorder(plot_data$full_name, plot_data$Raw_Importance))
-)
+                                   levels = levels(reorder(plot_data$full_name, plot_data$Raw_Importance)))
 
 abundance_data$Log2_Abundance <- log2(abundance_data$Relative_Abundance + 1)
 
@@ -492,11 +473,27 @@ dunn_res <- abundance_data %>%
   add_significance("p.adj") %>%
   add_xy_position(x = "full_name", dodge = 0.75)
 
+write.csv(
+  dunn_res %>%
+    left_join(abundance_data %>% distinct(full_name, PWY), by = "full_name") %>%
+    transmute(
+      PWY,
+      full_name,
+      Group1 = group1,
+      Group2 = group2,
+      p_value = p,
+      q_value = p.adj,
+      Significance = p.adj.signif
+    ),
+  "pathway_pernon_boxplot_pvalues.csv",
+  row.names = FALSE
+)
+
 boxplot_plot <- ggplot(abundance_data, aes(x = full_name, y = Log2_Abundance, fill = carriage_status)) +
   geom_boxplot(outlier.size = 0.5, alpha = 0.7, position = position_dodge(width = 0.75)) +
   stat_pvalue_manual(dunn_res, label = "p.adj.signif", coord.flip = TRUE, hide.ns = TRUE, tip.length = 0.01) +
   coord_flip() +
-  scale_fill_manual(values = c("Intermittent" = "#4DBBD5FF", "Persistent" = "#E64B35FF")) +
+  scale_fill_manual(values = c("Non_Carrier" = "#4DBBD5FF", "Persistent" = "#E64B35FF")) +
   labs(
     title = "Pathway Abundance",
     subtitle = "Log2(TPM)",
@@ -520,5 +517,5 @@ combined_plot <- importance_plot + boxplot_plot + plot_layout(widths = c(1, 1))
 
 print(combined_plot)
 
-ggsave("pathway_perint_feature_importance_combined.png", combined_plot, width = 14, height = 8, dpi = 300)
-ggsave("pathway_perint_feature_importance_combined.svg", combined_plot, width = 14, height = 8, dpi = 300)
+ggsave("pathway_pernon_feature_importance_combined.png", combined_plot, width = 14, height = 8, dpi = 300)
+ggsave("pathway_pernon_feature_importance_combined.svg", combined_plot, width = 14, height = 8, dpi = 300)

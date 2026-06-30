@@ -8,12 +8,11 @@ color_clinical <- "#E64B35FF"
 color_pathway  <- "#4DBBD5FF"
 color_taxa     <- "#00A087FF"
 
-source("random_forest/script_add_boxplot/RF_pernon_pwy.R")
+source("RF_pernon_pwy.R")
 roc_clinical_pwy <- roc_clinical
 roc_pathway_pwy  <- roc_pathway
 
-setwd("/Users/zyggyzdys/Desktop/st131")
-source("random_forest/script_add_boxplot/RF_pernon_taxa.R")
+source("RF_pernon_taxa.R")
 roc_taxa_taxa <- if (exists("roc_taxa")) roc_taxa else roc_pathway
 
 clin_ci <- ci.auc(roc_clinical_pwy)

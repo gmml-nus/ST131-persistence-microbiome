@@ -8,11 +8,11 @@ color_clinical <- "#E64B35FF"
 color_pathway <- "#4DBBD5FF"
 color_taxa <- "#00A087FF"
 
-source("random_forest/RF_perint_pwy.R")
+source("RF_perint_pwy.R")
 roc_clinical_pwy <- roc_clinical
 roc_pathway_pwy <- roc_pathway
 
-source("random_forest/RF_perint_taxa.R")
+source("RF_perint_taxa.R")
 roc_taxa_taxa <- if (exists("roc_taxa")) roc_taxa else roc_pathway
 
 clin_ci <- ci.auc(roc_clinical_pwy)
